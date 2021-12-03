@@ -1,11 +1,96 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Bookshop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.9.4/dist/js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" type="text/css" href=" {% static 'css/styles.css' %} ">
 </head>
 <body>
-{% block main %}
-{% endblock %}
+<div>
+    <nav class="uk-navbar-container" uk-navbar>
+        <div class="uk-navbar-left">
+
+            <ul class="uk-navbar-nav">
+                <li class="uk-active"><a href="#">Home</a></li>
+                <li>
+                    <a href="#">Categories</a>
+                    <div class="uk-navbar-dropdown uk-margin-remove">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#">Active</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-header">Header</li>
+                            <li><a href="#">Item</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="#">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="#">Authors</a></li>
+            </ul>
+
+        </div>
+        <div class="uk-navbar-right">
+
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#">Parent</a>
+                    <div class="uk-navbar-dropdown uk-margin-remove">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#">Active</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-header">Header</li>
+                            <li><a href="#">Item</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li class="uk-nav-divider"></li>
+                            <li><a href="#">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+</div>
+<div class="uk-grid uk-height-1-1">
+    <div class="uk-width-1-5@m uk-visible@m uk-tile-muted">
+        <div class="uk-padding">
+            <div>
+                <h5>Categories</h5>
+                <ul class="uk-list">
+                    <li>Action</li>
+                    <li>Drama</li>
+                    <li>Comedy</li>
+                    <li>Romance</li>
+                </ul>
+            </div>
+            <div>
+                <h5>Price Range</h5>
+                <input type="range" min="10" max="999">
+            </div>
+            <div>
+                <h5>Book Bindings</h5>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    <label><input class="uk-checkbox" type="checkbox"> Hardcover</label>
+                    <label><input class="uk-checkbox" type="checkbox"> Paperback</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="uk-width-4-5@m uk-tile-secondary">
+        <div class="uk-padding">
+            {% block main %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
 </body>
 </html>
