@@ -24,6 +24,7 @@
     <div class="uk-navbar-right">
 
         <ul class="uk-navbar-nav">
+            {% if request.user.is_authenticated %}
             <li>
                 <a href="#">Parent</a>
                 <div class="uk-navbar-dropdown uk-margin-remove">
@@ -34,10 +35,11 @@
                         <li><a href="#">Item</a></li>
                         <li><a href="#">Item</a></li>
                         <li class="uk-nav-divider"></li>
-                        <li><a href="#">Item</a></li>
+                        <li><a href="{% url 'sign-out' %}">Logout</a></li>
                     </ul>
                 </div>
             </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
