@@ -15,76 +15,11 @@
 </head>
 <body>
 <div>
-    <nav class="uk-navbar-container" uk-navbar>
-        <div class="uk-navbar-left">
-
-            <ul class="uk-navbar-nav">
-                <li class="uk-active"><a href="#">Home</a></li>
-                <li>
-                    <a href="#">Categories</a>
-                    <div class="uk-navbar-dropdown uk-margin-remove">
-                        <ul class="uk-nav uk-navbar-dropdown-nav">
-                            <li class="uk-active"><a href="#">Active</a></li>
-                            <li><a href="#">Item</a></li>
-                            <li class="uk-nav-header">Header</li>
-                            <li><a href="#">Item</a></li>
-                            <li><a href="#">Item</a></li>
-                            <li class="uk-nav-divider"></li>
-                            <li><a href="#">Item</a></li>
-                        </ul>
-                    </div>
-                </li>
-                <li><a href="#">Authors</a></li>
-            </ul>
-
-        </div>
-        <div class="uk-navbar-right">
-
-            <ul class="uk-navbar-nav">
-                <li>
-                    <a href="#">Parent</a>
-                    <div class="uk-navbar-dropdown uk-margin-remove">
-                        <ul class="uk-nav uk-navbar-dropdown-nav">
-                            <li class="uk-active"><a href="#">Active</a></li>
-                            <li><a href="#">Item</a></li>
-                            <li class="uk-nav-header">Header</li>
-                            <li><a href="#">Item</a></li>
-                            <li><a href="#">Item</a></li>
-                            <li class="uk-nav-divider"></li>
-                            <li><a href="#">Item</a></li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+{% include 'navbar.html' %}
 
 </div>
 <div class="uk-grid uk-height-1-1">
-    <div class="uk-width-1-5@m uk-visible@m uk-tile-muted">
-        <div class="uk-padding">
-            <div>
-                <h5>Categories</h5>
-                <ul class="uk-list">
-                    <li>Action</li>
-                    <li>Drama</li>
-                    <li>Comedy</li>
-                    <li>Romance</li>
-                </ul>
-            </div>
-            <div>
-                <h5>Price Range</h5>
-                <input type="range" min="10" max="999">
-            </div>
-            <div>
-                <h5>Book Bindings</h5>
-                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-                    <label><input class="uk-checkbox" type="checkbox"> Hardcover</label>
-                    <label><input class="uk-checkbox" type="checkbox"> Paperback</label>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'side_menu.html' %}
     <div class="uk-width-4-5@m uk-tile-secondary">
         <div class="uk-padding">
             {% block main %}
