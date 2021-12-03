@@ -1,0 +1,48 @@
+<nav class="uk-navbar-container" uk-navbar>
+    <div class="uk-navbar-left">
+
+        <ul class="uk-navbar-nav">
+            <li class="uk-active"><a href="#">Home</a></li>
+            <li>
+                <a href="#">Categories</a>
+                <div class="uk-navbar-dropdown uk-margin-remove">
+                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                        <li class="uk-active"><a href="#">Active</a></li>
+                        <li><a href="#">Item</a></li>
+                        <li class="uk-nav-header">Header</li>
+                        <li><a href="#">Item</a></li>
+                        <li><a href="#">Item</a></li>
+                        <li class="uk-nav-divider"></li>
+                        <li><a href="#">Item</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li><a href="#">Authors</a></li>
+        </ul>
+
+    </div>
+    <div class="uk-navbar-right">
+
+        <ul class="uk-navbar-nav">
+            {% if request.user.is_authenticated %}
+            <li>
+                <a href="#">Account</a>
+                <div class="uk-navbar-dropdown uk-margin-remove">
+                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                        <li><a href="{% url 'admin:index' %}">Dashboard</a></li>
+                        <li class="uk-nav-header">Header</li>
+                        <li><a href="#">Item</a></li>
+                        <li><a href="#">Item</a></li>
+                        <li class="uk-nav-divider"></li>
+                        <li><a href="{% url 'sign-out' %}">Logout</a></li>
+                    </ul>
+                </div>
+            </li>
+            {% else %}
+            <li>
+                <a class="uk-button" type="button" href="{% url 'admin:index' %}">Login</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
