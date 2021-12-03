@@ -26,11 +26,10 @@
         <ul class="uk-navbar-nav">
             {% if request.user.is_authenticated %}
             <li>
-                <a href="#">Parent</a>
+                <a href="#">Account</a>
                 <div class="uk-navbar-dropdown uk-margin-remove">
                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                        <li class="uk-active"><a href="#">Active</a></li>
-                        <li><a href="#">Item</a></li>
+                        <li><a href="{% url 'admin:index' %}">Dashboard</a></li>
                         <li class="uk-nav-header">Header</li>
                         <li><a href="#">Item</a></li>
                         <li><a href="#">Item</a></li>
@@ -38,6 +37,10 @@
                         <li><a href="{% url 'sign-out' %}">Logout</a></li>
                     </ul>
                 </div>
+            </li>
+            {% else %}
+            <li>
+                <a class="uk-button" type="button" href="{% url 'admin:index' %}">Login</a>
             </li>
             {% endif %}
         </ul>
