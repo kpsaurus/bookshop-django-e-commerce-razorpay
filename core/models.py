@@ -35,3 +35,7 @@ class User(AbstractUser):
             return self.display_name
         full_name = '%s %s' % (self.first_name, self.last_name)
         return full_name.strip()
+
+
+class Category(models.Model):
+    category = models.CharField(max_length=50, null=False, blank=False, help_text='Category of the book')
