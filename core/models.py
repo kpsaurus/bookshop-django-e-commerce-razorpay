@@ -39,3 +39,26 @@ class User(AbstractUser):
 
 class Category(models.Model):
     category = models.CharField(max_length=50, null=False, blank=False, help_text='Category of the book')
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return f'{self.category}'
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=100, null=False, blank=False)
+    LANGUAGES = [
+        ('ENGLISH', 'English'),
+        ('FRENCH', 'French'),
+        ('SPANISH', 'Spanish'),
+    ]
+    language = models.CharField(max_length=20, choices=LANGUAGES, blank=False, null=False)
+    pages = models.IntegerField(null=False, blank=False)
+    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL, related_name='book_category')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
