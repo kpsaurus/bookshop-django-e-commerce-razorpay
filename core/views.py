@@ -1,18 +1,19 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 from django.urls import reverse
-from .models import Book, Category
+from .models import Book, Category, BookType
 
 
 def index(request):
     books = Book.objects.all()
     categories = Category.objects.all()
+    book_types = BookType.objects.all()
     return render(request, 'core/index.html', {
         'books': books,
         'categories': categories,
+        'book_types': book_types
     })
 
 
