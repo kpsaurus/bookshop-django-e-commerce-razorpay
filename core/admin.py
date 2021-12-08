@@ -1,6 +1,4 @@
-from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
-from .models import User, Category
+from .models import User, Category, Book, Author, Product
 from django.contrib import admin
 
 
@@ -16,4 +14,19 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
     pass
