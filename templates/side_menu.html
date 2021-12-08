@@ -1,5 +1,6 @@
 <div class="uk-width-1-5@m uk-visible@m uk-tile-muted">
     <div class="uk-padding">
+
         <form method="get" action="{% url 'search-books' %}">
             <div>
                 <h5>Categories</h5>
@@ -8,6 +9,15 @@
                     <li class="pointer" hx-get="{% url 'search-books' %}" hx-target="#book-grid" hx-vals='{"category": "{{category}}"}'>{{category}}</li>
                     {% endfor %}
                 </ul>
+            </div>
+
+            <div>
+                <h5>Book Bindings</h5>
+                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                    {% for type in book_types %}
+                    <label><input class="uk-checkbox" type="checkbox"> {{type}}</label>
+                    {% endfor %}
+                </div>
             </div>
         </form>
     </div>
