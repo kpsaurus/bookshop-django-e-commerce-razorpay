@@ -39,3 +39,50 @@ class User(AbstractUser):
 
 class Category(models.Model):
     category = models.CharField(max_length=50, null=False, blank=False, help_text='Category of the book')
+
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return f'{self.category}'
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class Book(models.Model):
+    title = models.CharField(max_length=100, null=False, blank=False)
+    LANGUAGES = [
+        ('ENGLISH', 'English'),
+        ('FRENCH', 'French'),
+        ('SPANISH', 'Spanish'),
+    ]
+    language = models.CharField(max_length=20, choices=LANGUAGES, blank=False, null=False)
+    pages = models.IntegerField(null=False, blank=False)
+    category = models.ManyToManyField(Category, related_name='book_categories')
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
+
+    def __str__(self):
+        return f'{self.title}'
+
+
+class BookType(models.Model):
+    book_type = models.CharField(max_length=20, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.book_type}'
+
+
+class Product(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
+    book_type = models.ForeignKey(BookType, null=True, on_delete=models.SET_NULL)
+    price = models.FloatField(blank=False, null=False)
+    stock = models.IntegerField(blank=False, null=False, default=0)
+
+    def __str__(self):
+        return f'{self.book.title}'

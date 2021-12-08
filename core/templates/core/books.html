@@ -1,0 +1,13 @@
+{% load static %}
+{% for book in books %}
+<div>
+    <div>
+        <div>
+            <img class="uk-border-rounded" src="{% static 'images/placeholder.jpg' %}">
+        </div>
+        <div>
+            {{book}}
+        </div>
+    </div>
+</div>
+{% endfor %}
