@@ -1,4 +1,4 @@
-from .models import User, Category, Book, Author, Product
+from .models import User, Category, Book, Author, Product, BookType
 from django.contrib import admin
 
 
@@ -29,4 +29,9 @@ class BookAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(BookType)
+class BookTypeAdmin(admin.ModelAdmin):
     pass
