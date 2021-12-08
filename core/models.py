@@ -70,15 +70,14 @@ class Book(models.Model):
         return f'{self.title}'
 
 
+class BookType(models.Model):
+    book_type = models.CharField(max_length=20, null=False, blank=False)
+
+
 class Product(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    BOOK_TYPES = [
-        ('HARDCOVER', 'Hard Cover'),
-        ('PAPERBACK', 'Paper Back'),
-        ('AUDIOBOOK', 'Audio Book'),
-    ]
 
-    book_type = models.CharField(max_length=20, null=False, blank=False, choices=BOOK_TYPES)
+    book_type = models.ForeignKey(BookType, null=True, on_delete=models.SET_NULL)
     price = models.FloatField(blank=False, null=False)
     stock = models.IntegerField(blank=False, null=False, default=0)
 
