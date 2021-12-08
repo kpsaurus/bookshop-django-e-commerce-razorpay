@@ -62,3 +62,16 @@ class Book(models.Model):
     pages = models.IntegerField(null=False, blank=False)
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL, related_name='book_category')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
+
+
+class Product(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    BOOK_TYPES = [
+        ('HARDCOVER', 'Hard Cover'),
+        ('PAPERBACK', 'Paper Back'),
+        ('AUDIOBOOK', 'Audio Book'),
+    ]
+
+    book_type = models.CharField(max_length=20, null=False, blank=False, choices=BOOK_TYPES)
+    price = models.FloatField(blank=False, null=False)
+    stock = models.IntegerField(blank=False, null=False, default=0)
