@@ -50,6 +50,9 @@ class Category(models.Model):
 class Author(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
 
+    def __str__(self):
+        return f'{self.name}'
+
 
 class Book(models.Model):
     title = models.CharField(max_length=100, null=False, blank=False)
@@ -63,6 +66,9 @@ class Book(models.Model):
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL, related_name='book_category')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
 
+    def __str__(self):
+        return f'{self.title}'
+
 
 class Product(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -75,3 +81,6 @@ class Product(models.Model):
     book_type = models.CharField(max_length=20, null=False, blank=False, choices=BOOK_TYPES)
     price = models.FloatField(blank=False, null=False)
     stock = models.IntegerField(blank=False, null=False, default=0)
+
+    def __str__(self):
+        return f'{self.book.title}'
