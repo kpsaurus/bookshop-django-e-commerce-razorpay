@@ -63,7 +63,7 @@ class Book(models.Model):
     ]
     language = models.CharField(max_length=20, choices=LANGUAGES, blank=False, null=False)
     pages = models.IntegerField(null=False, blank=False)
-    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL, related_name='book_category')
+    category = models.ManyToManyField(Category, related_name='book_categories')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
 
     def __str__(self):
@@ -72,6 +72,9 @@ class Book(models.Model):
 
 class BookType(models.Model):
     book_type = models.CharField(max_length=20, null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.book_type}'
 
 
 class Product(models.Model):
