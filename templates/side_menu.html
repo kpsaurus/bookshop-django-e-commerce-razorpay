@@ -1,23 +1,13 @@
 <div class="uk-width-1-5@m uk-visible@m uk-tile-muted">
     <div class="uk-padding">
-
         <form method="get" action="{% url 'search-books' %}">
             <div>
                 <h5>Categories</h5>
                 <ul class="uk-list">
                     {% for category in categories %}
-                    <li hx-get="{% url 'search-books' %}" hx-target="#book-grid" hx-vals='{"category": "{{category}}"}'>{{category}}</li>
+                    <li class="pointer" hx-get="{% url 'search-books' %}" hx-target="#book-grid" hx-vals='{"category": "{{category}}"}'>{{category}}</li>
                     {% endfor %}
                 </ul>
-            </div>
-
-            <div>
-                <h5>Book Bindings</h5>
-                <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
-
-                    <label><input class="uk-checkbox" type="checkbox"> Hardcover</label>
-                    <label><input class="uk-checkbox" type="checkbox"> Paperback</label>
-                </div>
             </div>
         </form>
     </div>
