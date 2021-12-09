@@ -1,17 +1,35 @@
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 from django.urls import reverse
-from .models import Book, Category, BookType
+from .models import Book, Category, BookType, Product
 
 
 def index(request):
-    books = Book.objects.all()
+    category = request.GET.get('category')
+    book_type = request.GET.get('book_type')
     categories = Category.objects.all()
     book_types = BookType.objects.all()
+    if category is None:
+        books = Book.objects.all()
+    else:
+        books = Book.objects.filter(category__category=category).all()
+
+    if book_type:
+        books_as_per_book_type = Product.objects.filter(book_type__book_type=book_type).only('book')
+        if books_as_per_book_type:
+            books_as_per_book_type = [product.book.pk for product in books_as_per_book_type]
+        else:
+            books_as_per_book_type = []
+        books_2 = Book.objects.filter(id__in=books_as_per_book_type)
+        result_books = books.intersection(books_2)
+    else:
+        result_books = books
+
     return render(request, 'core/index.html', {
-        'books': books,
+        'books': result_books,
         'categories': categories,
         'book_types': book_types
     })
@@ -20,14 +38,3 @@ def index(request):
 def logout(request):
     auth_logout(request)
     return redirect(reverse('index'))
-
-
-def search_books(request):
-    category = request.GET['category']
-    if category is None:
-        books = Book.objects.all()
-    else:
-        books = Book.objects.filter(category__category=category).all()
-    return render(request, 'core/books.html', {
-        'books': books,
-    })
