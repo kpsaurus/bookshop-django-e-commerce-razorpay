@@ -65,6 +65,7 @@ class Book(models.Model):
     pages = models.IntegerField(null=False, blank=False)
     category = models.ManyToManyField(Category, related_name='book_categories')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
+    cover_image = models.ImageField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.title}'
