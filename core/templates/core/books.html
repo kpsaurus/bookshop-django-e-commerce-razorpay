@@ -4,7 +4,11 @@
 <a href="{% url 'book-details' pk=book.pk %}">
     <div>
         <div>
+            {% if book.cover_image %}
+            <img class="uk-border-rounded" src="{{book.cover_image.url}}">
+            {% else %}
             <img class="uk-border-rounded" src="{% static 'images/placeholder.jpg' %}">
+            {% endif %}
         </div>
         <div>
             {{book}}
