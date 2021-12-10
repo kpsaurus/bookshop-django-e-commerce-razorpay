@@ -80,7 +80,7 @@ class BookType(models.Model):
 
 
 class Product(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_product')
 
     book_type = models.ForeignKey(BookType, null=True, on_delete=models.SET_NULL)
     price = models.FloatField(blank=False, null=False)
