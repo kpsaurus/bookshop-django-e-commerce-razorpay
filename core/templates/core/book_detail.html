@@ -1,7 +1,25 @@
 {% extends "base.html" %}
+{% load static %}
 {% block main %}
 <section>
-    <h1>Book detail!</h1>
-    <p>{{object.title}}</p>
+    <h2 class="uk-margin-remove-bottom">{{object.title}}</h2>
+    <h5 class="uk-margin-remove-top">{{object.author}}</h5>
+    <div class="uk-grid uk-child-width-1-3@m">
+        <div>
+            {% if object.cover_image %}
+            <img class="uk-border-rounded" src="{{object.cover_image.url}}">
+            {% else %}
+            <img class="uk-border-rounded" src="{% static 'images/placeholder.jpg' %}">
+            {% endif %}
+        </div>
+        <div>
+            <h6 class="uk-margin-remove">Category</h6>
+            <span class="uk-text-success">
+            {% for category in object.category.all %}
+                {{category}}{% if forloop.first %},{% endif %}
+            {% endfor %}
+                </span>
+        </div>
+    </div>
 </section>
 {% endblock %}
