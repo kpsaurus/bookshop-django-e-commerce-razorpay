@@ -1,6 +1,7 @@
 {% load static %}
 {% for book in books %}
-<div>
+
+<a href="{% url 'book-details' pk=book.pk %}">
     <div>
         <div>
             <img class="uk-border-rounded" src="{% static 'images/placeholder.jpg' %}">
@@ -9,5 +10,6 @@
             {{book}}
         </div>
     </div>
-</div>
+</a>
+
 {% endfor %}
