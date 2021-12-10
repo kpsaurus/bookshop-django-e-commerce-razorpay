@@ -45,11 +45,16 @@ class BookDetails(DetailView):
         # Add in a QuerySet of all the books
         context['book_list'] = Book.objects.all()
 
+        object = kwargs.get('object')
+
+        book_products = object.book_product.all()
+
         categories = Category.objects.all()
         book_types = BookType.objects.all()
 
         context['categories'] = categories
         context['book_types'] = book_types
+        context['book_products'] = book_products
         return context
 
 
