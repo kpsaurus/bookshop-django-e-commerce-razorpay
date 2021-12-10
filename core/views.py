@@ -5,6 +5,7 @@ from django.contrib.auth import logout as auth_logout
 # Create your views here.
 from django.urls import reverse
 from .models import Book, Category, BookType, Product
+from django.views.generic import DetailView
 
 
 def index(request):
@@ -33,6 +34,23 @@ def index(request):
         'categories': categories,
         'book_types': book_types
     })
+
+
+class BookDetails(DetailView):
+    model = Book
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['book_list'] = Book.objects.all()
+
+        categories = Category.objects.all()
+        book_types = BookType.objects.all()
+
+        context['categories'] = categories
+        context['book_types'] = book_types
+        return context
 
 
 def logout(request):
