@@ -1,2 +1,4 @@
 django==3.2
 python-dotenv==0.17.1
+Pillow==8.4.0
+razorpay
