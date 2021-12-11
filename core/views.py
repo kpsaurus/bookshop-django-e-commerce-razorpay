@@ -1,4 +1,7 @@
-from django.db.models import Q
+import json
+
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
 
@@ -6,6 +9,9 @@ from django.contrib.auth import logout as auth_logout
 from django.urls import reverse
 from .models import Book, Category, BookType, Product
 from django.views.generic import DetailView
+import os
+from .forms import MakeOrderForm
+import razorpay
 
 
 def index(request):
@@ -56,6 +62,46 @@ class BookDetails(DetailView):
         context['book_types'] = book_types
         context['book_products'] = book_products
         return context
+
+
+@login_required
+def make_order(request):
+    if request.method == "POST":
+        data = request.body
+        data = json.loads(data)
+
+        form = MakeOrderForm(data)
+
+        if form.is_valid():
+            selected_product = form.cleaned_data['selected_product']
+            product = Product.objects.get(pk=selected_product)
+            # Creating the Razorpay client object.
+            client = razorpay.Client(auth=(os.getenv("RAZORPAY_ID"), os.getenv("RAZORPAY_SECRET_KEY")))
+
+            # This is the data that needs to be passed onto Razorpay when creating an order.
+            DATA = {
+                "amount": float(product.price * 100),
+                "currency": "INR",
+                "receipt": f"receipt for {product.book.title}",
+                "notes": {
+                    "title": product.book.title,
+                    "user": request.user
+                }
+            }
+            # Creating a Razorpay order.
+            resp = client.order.create(data=DATA)
+            result = {'order_id': None}
+
+            # If the order successfully created, return back the order id.
+            if resp:
+                order_id = resp.get('id')
+                result = {'order_id': order_id}
+        else:
+            result = form.errors
+
+        return HttpResponse(json.dumps(result))
+    else:
+        return redirect('/')
 
 
 def logout(request):
