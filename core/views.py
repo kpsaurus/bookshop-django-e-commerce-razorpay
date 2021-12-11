@@ -85,7 +85,7 @@ def make_order(request):
                 "receipt": f"receipt for {product.book.title}",
                 "notes": {
                     "title": product.book.title,
-                    "user": request.user
+                    "user": request.user.get_full_name()
                 }
             }
             # Creating a Razorpay order.
