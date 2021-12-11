@@ -18,6 +18,8 @@ class User(AbstractUser):
     display_name = models.CharField(max_length=100, null=True, blank=True,
                                     help_text='Alternate name')
 
+    address = models.TextField(null=True, blank=True)
+
     REQUIRED_FIELDS = ['email', 'first_name', ]
     objects = UserManager()
 
