@@ -1,3 +1,4 @@
+import binascii
 import json
 
 from django.contrib.auth.decorators import login_required
@@ -7,11 +8,17 @@ from django.contrib.auth import logout as auth_logout
 
 # Create your views here.
 from django.urls import reverse
-from .models import Book, Category, BookType, Product
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import Book, Category, BookType, Product, Order
 from django.views.generic import DetailView
 import os
-from .forms import MakeOrderForm
+from .forms import MakeOrderForm, PaymentGatewayResponse
 import razorpay
+import hmac
+import hashlib
+from django.contrib import messages
 
 
 def index(request):
@@ -96,12 +103,53 @@ def make_order(request):
             if resp:
                 order_id = resp.get('id')
                 result = {'order_id': order_id}
+
+                # Creating an order.
+                Order.objects.create(
+                    product=product,
+                    user=request.user,
+                    has_paid=False,
+                    order_created_date=timezone.now(),
+                    razorpay_order_id=order_id,
+                    razorpay_payment_id=None,
+                )
         else:
             result = form.errors
 
         return HttpResponse(json.dumps(result))
     else:
         return redirect('/')
+
+
+@csrf_exempt
+def gateway_response(request):
+    form = PaymentGatewayResponse(request.POST)
+    if form.is_valid():
+        data = form.cleaned_data
+
+        # Generating checksum for verification.
+        message = data['razorpay_order_id'] + "|" + data['razorpay_payment_id']
+        signature = hmac.new(bytes(os.getenv('RAZORPAY_SECRET_KEY'), 'latin-1'), bytes(message, 'latin-1'),
+                             hashlib.sha256).hexdigest()
+
+        # Checking the signature received from the gateway and generated signature same or not.
+        if data['razorpay_signature'] == signature:
+            # Signature match. Payment has been verified.
+            # Updating the Order as payment successful.
+            order_details = Order.objects.get(razorpay_order_id=data['razorpay_order_id'])
+            order_details.razorpay_payment_id = data['razorpay_payment_id']
+            order_details.has_paid = True
+            order_details.save()
+            messages.success(request, 'Payment has been successful. Order #ID: ' + str(order_details.pk))
+            return redirect(reverse('index'))
+        else:
+            # Failed to verifiy the signature.
+            messages.error(request, 'Failed to make the payment.')
+            return redirect(reverse('index'))
+    else:
+        # Failed to get the proper response from the gateway.
+        result = form.errors
+    return redirect(reverse('index'))
 
 
 def logout(request):
