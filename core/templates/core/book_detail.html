@@ -53,6 +53,7 @@ var options = {
     "currency": "INR",
     "name": "Book Shop",
     "order_id": order_id,
+    "callback_url": "{% url 'gateway-response' %}",
 
     "prefill": {
         "name": "{{request.user}}",
