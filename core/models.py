@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -17,6 +18,8 @@ class User(AbstractUser):
     )
     display_name = models.CharField(max_length=100, null=True, blank=True,
                                     help_text='Alternate name')
+
+    address = models.TextField(null=True, blank=True)
 
     REQUIRED_FIELDS = ['email', 'first_name', ]
     objects = UserManager()
@@ -65,6 +68,8 @@ class Book(models.Model):
     pages = models.IntegerField(null=False, blank=False)
     category = models.ManyToManyField(Category, related_name='book_categories')
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='book_author')
+    cover_image = models.ImageField(blank=True, null=True)
+    about = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -78,7 +83,7 @@ class BookType(models.Model):
 
 
 class Product(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='book_product')
 
     book_type = models.ForeignKey(BookType, null=True, on_delete=models.SET_NULL)
     price = models.FloatField(blank=False, null=False)
@@ -86,3 +91,18 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.book.title}'
+
+
+class Order(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
+    has_paid = models.BooleanField(default=False)
+    razorpay_order_id = models.CharField(max_length=100, null=True, blank=True)
+    razorpay_payment_id = models.CharField(max_length=100, null=True, blank=True)
+    order_created_date = models.DateTimeField(auto_created=True)
+    order_updated_date = models.DateTimeField(auto_now=True)
+    has_cancelled = models.BooleanField(default=False)
+    cancelled_date = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.product.book.title} purchase from {self.user} on {self.order_created_date}'

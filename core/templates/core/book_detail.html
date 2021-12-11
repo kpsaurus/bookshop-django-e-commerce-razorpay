@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+{% block main %}
+<section>
+    <h2 class="uk-margin-remove-bottom">{{object.title}}</h2>
+    <h5 class="uk-margin-remove-top">{{object.author}}</h5>
+    <div class="uk-grid">
+        <div class="uk-width-1-3@m">
+            {% if object.cover_image %}
+            <img class="uk-border-rounded" src="{{object.cover_image.url}}">
+            {% else %}
+            <img class="uk-border-rounded" src="{% static 'images/placeholder.jpg' %}">
+            {% endif %}
+        </div>
+        <div class="uk-width-2-3@m">
+            <h6 class="uk-margin-remove">Category</h6>
+            <div>
+            <span class="uk-text-success">
+            {% for category in object.category.all %}
+                {{category}}{% if forloop.first %},{% endif %}
+            {% endfor %}
+                </span>
+            </div>
+            <div class="uk-margin">
+                {% if object.about %}
+                {{object.about}}
+                {% endif %}
+            </div>
+            <h5>Available in</h5>
+            <div class="uk-margin uk-grid-small uk-child-width-auto uk-grid">
+                {% for book_product in book_products %}
+                <label><input class="uk-radio book_type" type="radio" name="book_type"
+                              value="{{book_product.pk}}" price="{{book_product.price}}"> {{book_product.book_type}}</label>
+                {% endfor %}
+            </div>
+            <div>
+                <h5>Price: <span id="price"></span></h5>
+            </div>
+            <div>
+                <button class="uk-button uk-button-primary uk-border-rounded" id="pay">Buy Now</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+
+function make_payment(order_id){
+
+var options = {
+
+    "currency": "INR",
+    "name": "Book Shop",
+    "order_id": order_id,
+
+    "prefill": {
+        "name": "{{request.user}}",
+        "email": "{{request.user.email}}",
+        "contact": ""
+    },
+    "notes": {
+        "address": "{{request.user.address}}"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.open();
+}
+
+</script>
+
+
+<script>
+    var book_type = document.getElementsByClassName('book_type');
+    var selected_product = '';
+    for(var i=0;i<book_type.length;i++){
+        book_type[i].addEventListener('change', function(){
+            var price = document.getElementById('price')
+            selected_product=this.value;
+            price.innerHTML=this.getAttribute('price');
+        });
+    }
+
+
+    var pay_button = document.getElementById('pay');
+
+    pay_button.addEventListener('click', async function(){
+        this.setAttribute("disabled", "disabled");
+
+        fetch('{% url "make-order" %}', {
+        method: 'post',
+        headers: {
+          "Content-type": "application/json",
+          "X-CSRFToken": "{{csrf_token}}"
+        },
+        body: JSON.stringify(
+
+            {
+                selected_product:selected_product
+            }
+
+        )
+      }).then(response=>response.json())
+      .then(function (data) {
+        console.log('Request succeeded with JSON response', data);
+        console.log(data.order_id)
+        if(data.order_id){
+            make_payment(data.order_id)
+        }else{
+
+            UIkit.notification({
+                message: 'Failed to create an order. Please try again later.',
+                status: 'danger',
+                pos: 'bottom-center',
+                timeout: 3000
+            });
+
+
+         }
+      })
+      .catch(function (error) {
+            UIkit.notification({
+                message: 'Failed to create an order. Please try again later.',
+                status: 'danger',
+                pos: 'bottom-center',
+                timeout: 3000
+            });
+      });
+
+    })
+
+</script>
+{% endblock %}
+
+

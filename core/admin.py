@@ -1,4 +1,4 @@
-from .models import User, Category, Book, Author, Product, BookType
+from .models import User, Category, Book, Author, Product, BookType, Order
 from django.contrib import admin
 
 
@@ -35,3 +35,8 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(BookType)
 class BookTypeAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ('product', 'order_created_date', 'order_updated_date')

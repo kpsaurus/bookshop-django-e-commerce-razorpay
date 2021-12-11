@@ -8,3 +8,4 @@ env/*
 .env.dev
 .env.prod
 static/*
+media/*
