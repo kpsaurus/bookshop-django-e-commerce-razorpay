@@ -2,6 +2,7 @@ import binascii
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout
@@ -82,37 +83,46 @@ def make_order(request):
         if form.is_valid():
             selected_product = form.cleaned_data['selected_product']
             product = Product.objects.get(pk=selected_product)
-            # Creating the Razorpay client object.
-            client = razorpay.Client(auth=(os.getenv("RAZORPAY_ID"), os.getenv("RAZORPAY_SECRET_KEY")))
 
-            # This is the data that needs to be passed onto Razorpay when creating an order.
-            DATA = {
-                "amount": float(product.price * 100),
-                "currency": "INR",
-                "receipt": f"receipt for {product.book.title}",
-                "notes": {
-                    "title": product.book.title,
-                    "user": request.user.get_full_name()
+            if product.stock > 0:
+                # Creating the Razorpay client object.
+                client = razorpay.Client(auth=(os.getenv("RAZORPAY_ID"), os.getenv("RAZORPAY_SECRET_KEY")))
+
+                # This is the data that needs to be passed onto Razorpay when creating an order.
+                DATA = {
+                    "amount": float(product.price * 100),
+                    "currency": "INR",
+                    "receipt": f"receipt for {product.book.title}",
+                    "notes": {
+                        "title": product.book.title,
+                        "user": request.user.get_full_name()
+                    }
                 }
-            }
-            # Creating a Razorpay order.
-            resp = client.order.create(data=DATA)
-            result = {'order_id': None}
+                # Creating a Razorpay order.
+                resp = client.order.create(data=DATA)
+                result = {'order_id': None}
 
-            # If the order successfully created, return back the order id.
-            if resp:
-                order_id = resp.get('id')
-                result = {'order_id': order_id}
+                # If the order successfully created, return back the order id.
+                if resp:
+                    order_id = resp.get('id')
+                    result = {'order_id': order_id}
 
-                # Creating an order.
-                Order.objects.create(
-                    product=product,
-                    user=request.user,
-                    has_paid=False,
-                    order_created_date=timezone.now(),
-                    razorpay_order_id=order_id,
-                    razorpay_payment_id=None,
-                )
+                    # Creating an order.
+                    Order.objects.create(
+                        product=product,
+                        user=request.user,
+                        has_paid=False,
+                        order_created_date=timezone.now(),
+                        razorpay_order_id=order_id,
+                        razorpay_payment_id=None,
+                    )
+
+                    # Updating the stock
+                    product.stock = F('stock') - 1
+                    product.save()
+
+            else:
+                result = {'status': 'Out of stock'}
         else:
             result = form.errors
 
