@@ -122,7 +122,7 @@ def make_order(request):
                     product.save()
 
             else:
-                result = {'status': 'Out of stock'}
+                result = {'status': 'Failed to purchase. Out of stock.'}
         else:
             result = form.errors
 
