@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import Book, Category, BookType, Product, Order
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 import os
 from .forms import MakeOrderForm, PaymentGatewayResponse
 import razorpay
@@ -160,6 +160,19 @@ def gateway_response(request):
         # Failed to get the proper response from the gateway.
         result = form.errors
     return redirect(reverse('index'))
+
+
+@login_required
+def user_orders(request):
+    user = request.user
+    user_orders_list = Order.objects.filter(user=user)
+    categories = Category.objects.all()
+    book_types = BookType.objects.all()
+    return render(request, "core/user_orders.html", {
+        'user_orders': user_orders_list,
+        'categories': categories,
+        'book_types': book_types
+    })
 
 
 def logout(request):
