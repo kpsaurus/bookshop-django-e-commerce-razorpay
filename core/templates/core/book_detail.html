@@ -58,7 +58,7 @@ var options = {
     "prefill": {
         "name": "{{request.user}}",
         "email": "{{request.user.email}}",
-        "contact": ""
+        "contact": "9999999999"
     },
     "notes": {
         "address": "{{request.user.address}}"
@@ -106,18 +106,29 @@ rzp1.open();
         )
       }).then(response=>response.json())
       .then(function (data) {
-        console.log('Request succeeded with JSON response', data);
-        console.log(data.order_id)
         if(data.order_id){
             make_payment(data.order_id)
         }else{
 
-            UIkit.notification({
-                message: 'Failed to create an order. Please try again later.',
-                status: 'danger',
-                pos: 'bottom-center',
-                timeout: 3000
-            });
+            if (data.status){
+
+                UIkit.notification({
+                    message: data.status,
+                    status: 'danger',
+                    pos: 'bottom-center',
+                    timeout: 3000
+                });
+
+            }else{
+
+                UIkit.notification({
+                    message: 'Failed to create an order. Please try again later.',
+                    status: 'danger',
+                    pos: 'bottom-center',
+                    timeout: 3000
+                });
+
+            }
 
 
          }
